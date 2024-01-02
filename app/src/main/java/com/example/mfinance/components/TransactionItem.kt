@@ -1,7 +1,6 @@
 package com.example.mfinance.components
 
 import android.content.res.Configuration
-import android.os.Build
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -30,8 +29,8 @@ import java.util.Locale
 
 @Composable
 fun TransactionItem(
+    modifier: Modifier = Modifier,
     transaction: Transaction = getTestTransaction(),
-    modifier: Modifier = Modifier
 ) {
     val shape = RoundedCornerShape(8.dp)
     val iconColor = if (transaction.amount > 0) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSecondary
@@ -80,9 +79,5 @@ fun PreviewOfTransactionItem() {
 }
 
 fun getTestTransaction(): Transaction {
-    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-        Transaction(1, 460.00, "Food", "Zabka", LocalDateTime.now())
-    } else {
-        TODO("VERSION.SDK_INT < O")
-    }
+    return Transaction(1, 460.00, "Food", "Zabka", LocalDateTime.now())
 }

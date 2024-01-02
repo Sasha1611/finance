@@ -51,7 +51,7 @@ fun TotalSpendCard() {
         modifier = Modifier
             .width(160.dp)
             .height(128.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer),
         shape = RoundedCornerShape(16.dp)
     ) {
         Column(
@@ -61,12 +61,12 @@ fun TotalSpendCard() {
         ) {
             Text(
                 text = stringResource(R.string.total_spend),
-                color = MaterialTheme.colorScheme.onPrimaryContainer,
+                color = MaterialTheme.colorScheme.onSecondaryContainer,
                 style = MaterialTheme.typography.titleSmall
             )
             Text(
                 text = "1400",
-                color = MaterialTheme.colorScheme.onPrimaryContainer,
+                color = MaterialTheme.colorScheme.onSecondaryContainer,
                 style = MaterialTheme.typography.titleLarge
             )
         }
@@ -114,7 +114,7 @@ fun GoalCard() {
         modifier = Modifier
             .width(160.dp)
             .height(128.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.tertiaryContainer),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer),
         shape = RoundedCornerShape(16.dp)
     ) {
         Column(
@@ -124,12 +124,12 @@ fun GoalCard() {
         ) {
             Text(
                 text = "Goal to save",
-                color = MaterialTheme.colorScheme.onTertiaryContainer,
+                color = MaterialTheme.colorScheme.onSecondaryContainer,
                 style = MaterialTheme.typography.titleSmall
             )
             Text(
                 text = "143",
-                color = MaterialTheme.colorScheme.onTertiaryContainer,
+                color = MaterialTheme.colorScheme.onSecondaryContainer,
                 style = MaterialTheme.typography.titleLarge
             )
         }
