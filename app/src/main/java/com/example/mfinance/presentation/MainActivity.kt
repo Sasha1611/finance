@@ -1,4 +1,4 @@
-package com.example.mfinance
+package com.example.mfinance.presentation
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -7,8 +7,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
-import com.example.mfinance.components.BottomNav
-import com.example.mfinance.navigation.FinanceNavHost
+import com.example.mfinance.presentation.components.BottomNav
+import com.example.mfinance.presentation.navigation.FinanceNavHost
 import com.example.mfinance.ui.theme.MFinanceTheme
 
 class MainActivity : ComponentActivity() {

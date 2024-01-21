@@ -1,4 +1,4 @@
-package com.example.mfinance.components
+package com.example.mfinance.presentation.components
 
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
@@ -9,8 +9,8 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.navigation.NavHostController
-import com.example.mfinance.navigation.getListOfScreen
-import com.example.mfinance.navigation.navigateSingleTopTo
+import com.example.mfinance.presentation.navigation.getListOfScreen
+import com.example.mfinance.presentation.navigation.navigateSingleTopTo
 
 
 @Composable

@@ -1,4 +1,4 @@
-package com.example.mfinance.navigation
+package com.example.mfinance.presentation.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -6,9 +6,9 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.example.mfinance.screen.BudgetScreen
-import com.example.mfinance.screen.DetailsScreen
-import com.example.mfinance.screen.TransactionScreen
+import com.example.mfinance.presentation.screen.BudgetScreen
+import com.example.mfinance.presentation.screen.DetailsScreen
+import com.example.mfinance.presentation.screen.TransactionScreen
 
 @Composable
 fun FinanceNavHost(navController: NavHostController, modifier: Modifier = Modifier) {

@@ -1,4 +1,4 @@
-package com.example.mfinance.navigation
+package com.example.mfinance.presentation.navigation
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Details

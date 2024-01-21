@@ -1,4 +1,4 @@
-package com.example.mfinance.components
+package com.example.mfinance.presentation.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -19,12 +19,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.min
-import com.example.mfinance.data.Transaction
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.mfinance.data.TransactionEntity
+import com.example.mfinance.presentation.AppViewModelProvider
+import com.example.mfinance.presentation.transaction.TransactionUIState
+import com.example.mfinance.presentation.transaction.TransactionViewModel
 import java.time.LocalDateTime
 
 @Composable
-fun ListOfTransactions() {
+fun ListOfTransactions(transactions: List<TransactionUIState>, onClick: () -> Unit = {}) {
     Box(modifier = Modifier.fillMaxSize().heightIn(min = 300.dp)) {
         LazyColumn(
             modifier = Modifier
@@ -33,13 +36,13 @@ fun ListOfTransactions() {
             verticalArrangement = Arrangement.spacedBy(8.dp),
             contentPadding = PaddingValues(vertical = 8.dp, horizontal = 8.dp)
         ) {
-            items(getTestTransactions(), key = { transaction -> transaction.id }) { transaction ->
+            items(transactions, key = { transaction -> transaction.id }) { transaction ->
                 TransactionItem(transaction = transaction)
             }
         }
 
         FloatingActionButton(
-            onClick = { /*Click Implementation*/ },
+            onClick = { onClick() },
             containerColor = MaterialTheme.colorScheme.tertiaryContainer,
             contentColor = MaterialTheme.colorScheme.onTertiaryContainer,
             modifier = Modifier
@@ -55,22 +58,23 @@ fun ListOfTransactions() {
     }
 }
 
-fun getTestTransactions(): List<Transaction> {
+/*
+fun getTestTransactions(): List<TransactionUIState> {
     return listOf(
-        Transaction(1, 460.00, "Food", "Zabka", LocalDateTime.now()),
-        Transaction(2, -34.00, "Bank", "Millenium", LocalDateTime.now()),
-        Transaction(3, 25.00, "Car", "Stacja", LocalDateTime.now()),
-        Transaction(4, 460.00, "Food", "Zabka", LocalDateTime.now()),
-        Transaction(5, -34.00, "Bank", "Millenium", LocalDateTime.now()),
-        Transaction(6, 25.00, "Car", "Stacja", LocalDateTime.now()),
-        Transaction(7, 460.00, "Food", "Zabka", LocalDateTime.now()),
-        Transaction(8, -34.00, "Bank", "Millenium", LocalDateTime.now()),
-        Transaction(9, 25.00, "Car", "Stacja", LocalDateTime.now()),
-        Transaction(10, 460.00, "Food", "Zabka", LocalDateTime.now()),
-        Transaction(11, -34.00, "Bank", "Millenium", LocalDateTime.now()),
-        Transaction(12, 25.00, "Car", "Stacja", LocalDateTime.now()),
-        Transaction(13, 460.00, "Food", "Zabka", LocalDateTime.now()),
-        Transaction(14, -34.00, "Bank", "Millenium", LocalDateTime.now()),
-        Transaction(15, 25.00, "Car", "Stacja", LocalDateTime.now())
+        TransactionUIState(1, 460.00, "Food", "Zabka", LocalDateTime.now()),
+        TransactionUIState(2, -34.00, "Bank", "Millenium", LocalDateTime.now()),
+        TransactionUIState(3, 25.00, "Car", "Stacja", LocalDateTime.now()),
+        TransactionUIState(4, 460.00, "Food", "Zabka", LocalDateTime.now()),
+        TransactionUIState(5, -34.00, "Bank", "Millenium", LocalDateTime.now()),
+        TransactionUIState(6, 25.00, "Car", "Stacja", LocalDateTime.now()),
+        TransactionUIState(7, 460.00, "Food", "Zabka", LocalDateTime.now()),
+        TransactionUIState(8, -34.00, "Bank", "Millenium", LocalDateTime.now()),
+        TransactionUIState(9, 25.00, "Car", "Stacja", LocalDateTime.now()),
+        TransactionUIState(10, 460.00, "Food", "Zabka", LocalDateTime.now()),
+        TransactionUIState(11, -34.00, "Bank", "Millenium", LocalDateTime.now()),
+        TransactionUIState(12, 25.00, "Car", "Stacja", LocalDateTime.now()),
+        TransactionUIState(13, 460.00, "Food", "Zabka", LocalDateTime.now()),
+        TransactionUIState(14, -34.00, "Bank", "Millenium", LocalDateTime.now()),
+        TransactionUIState(15, 25.00, "Car", "Stacja", LocalDateTime.now())
     )
-}
+}*/

@@ -1,4 +1,4 @@
-package com.example.mfinance.components
+package com.example.mfinance.presentation.components
 
 import java.text.DecimalFormat
 

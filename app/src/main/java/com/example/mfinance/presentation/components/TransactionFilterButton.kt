@@ -1,4 +1,4 @@
-package com.example.mfinance.components
+package com.example.mfinance.presentation.components
 
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults

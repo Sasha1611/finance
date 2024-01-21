@@ -1,4 +1,4 @@
-package com.example.mfinance.components
+package com.example.mfinance.presentation.components
 
 import android.content.res.Configuration
 import androidx.compose.foundation.background

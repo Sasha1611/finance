@@ -1,4 +1,4 @@
-package com.example.mfinance.screen
+package com.example.mfinance.presentation.screen
 
 
 import androidx.compose.foundation.clickable
@@ -24,6 +24,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDateRangePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -33,9 +34,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
-import com.example.mfinance.components.AnimatedCircleWithText
-import com.example.mfinance.components.ListOfTransactions
-import com.example.mfinance.components.SpentTypeComponent
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.mfinance.presentation.AppViewModelProvider
+import com.example.mfinance.presentation.components.AnimatedCircleWithText
+import com.example.mfinance.presentation.components.ListOfTransactions
+import com.example.mfinance.presentation.components.SpentTypeComponent
+import com.example.mfinance.presentation.transaction.TransactionViewModel
 import org.w3c.dom.Text
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -43,6 +47,7 @@ import java.util.Calendar
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DetailsScreen(modifier: Modifier = Modifier) {
+    val viewModel: TransactionViewModel = viewModel(factory = AppViewModelProvider.Factory)
     Scaffold { paddings ->
         Column(
             modifier = modifier
@@ -104,7 +109,7 @@ fun DetailsScreen(modifier: Modifier = Modifier) {
                 SpentTypeComponent(color = Color.Blue)
             }
             Spacer(Modifier.height(10.dp))
-            ListOfTransactions()
+            ListOfTransactions(viewModel.getAllTransaction().collectAsState().value)
         }
     }
 }

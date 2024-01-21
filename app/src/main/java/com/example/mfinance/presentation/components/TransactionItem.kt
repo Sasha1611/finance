@@ -1,4 +1,4 @@
-package com.example.mfinance.components
+package com.example.mfinance.presentation.components
 
 import android.content.res.Configuration
 import androidx.compose.foundation.background
@@ -21,7 +21,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.mfinance.data.Transaction
+import com.example.mfinance.presentation.transaction.TransactionUIState
 import com.example.mfinance.ui.theme.MFinanceTheme
 import java.time.LocalDateTime
 import java.time.format.TextStyle
@@ -30,7 +30,7 @@ import java.util.Locale
 @Composable
 fun TransactionItem(
     modifier: Modifier = Modifier,
-    transaction: Transaction = getTestTransaction(),
+    transaction: TransactionUIState = getTestTransaction(),
 ) {
     val shape = RoundedCornerShape(8.dp)
     val iconColor = if (transaction.amount > 0) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSecondary
@@ -78,6 +78,6 @@ fun PreviewOfTransactionItem() {
     }
 }
 
-fun getTestTransaction(): Transaction {
-    return Transaction(1, 460.00, "Food", "Zabka", LocalDateTime.now())
+fun getTestTransaction(): TransactionUIState {
+    return TransactionUIState(1, 460.00, "Food", "Zabka", LocalDateTime.now())
 }
