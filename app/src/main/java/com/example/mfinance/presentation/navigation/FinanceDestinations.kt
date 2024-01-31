@@ -6,30 +6,37 @@ import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.ui.graphics.vector.ImageVector
 
-interface Screen {
+interface Screen{
     val route: String
+}
+
+interface ScreenWithIcon : Screen{
     val selectedIcon: ImageVector
     val unselectedIcon: ImageVector
 }
 
-object Transaction : Screen {
+object Transaction : ScreenWithIcon {
     override val route: String = "transaction"
     override val selectedIcon: ImageVector = Icons.Default.Home
     override val unselectedIcon: ImageVector = Icons.Filled.Home
 }
 
-object Details : Screen {
+object Details : ScreenWithIcon {
     override val route: String = "details"
     override val selectedIcon: ImageVector = Icons.Default.Details
     override val unselectedIcon: ImageVector = Icons.Filled.Details
 }
 
-object Budget : Screen {
+object Budget : ScreenWithIcon {
     override val route: String = "budget"
     override val selectedIcon: ImageVector = Icons.Default.Edit
     override val unselectedIcon: ImageVector = Icons.Filled.Edit
 }
 
-fun getListOfScreen():List<Screen>{
+object TransactionEntry : Screen {
+    override val route: String = "transactionEntry"
+}
+
+fun getListOfScreen():List<ScreenWithIcon>{
     return listOf(Transaction, Details, Budget)
 }

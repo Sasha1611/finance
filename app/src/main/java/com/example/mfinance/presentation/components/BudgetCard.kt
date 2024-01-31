@@ -12,29 +12,47 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.TrendingDown
+import androidx.compose.material.icons.automirrored.filled.TrendingDown
+import androidx.compose.material.icons.automirrored.filled.TrendingUp
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.mfinance.R
+import com.example.mfinance.presentation.AppViewModelProvider
+import com.example.mfinance.presentation.budget.BudgetUiState
+import com.example.mfinance.presentation.budget.BudgetViewModel
+import com.example.mfinance.presentation.transaction.TransactionViewModel
+import com.example.mfinance.util.getLastDayOfCurrentMonth
 
 @Composable
-fun BudgetCard() {
+fun BudgetCard(
+    transactionViewModel: TransactionViewModel = viewModel(factory = AppViewModelProvider.Factory),
+    budgetViewModel: BudgetViewModel = viewModel(factory = AppViewModelProvider.Factory)
+) {
+    val totalAmount = transactionViewModel.totalAmount.collectAsState()
+    val budgetValue = budgetViewModel.budgetFlow.collectAsState()
+
     LazyRow(
         modifier = Modifier.background(MaterialTheme.colorScheme.background),
         contentPadding = PaddingValues(vertical = 8.dp, horizontal = 8.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
-        item { TotalSpendCard() }
-        item { TrendCard() }
+        item { TotalSpendCard(totalAmount.value) }
+        item { TrendCard(budgetValue.value, totalAmount.value) }
         item { GoalCard() }
     }
 }
@@ -46,7 +64,7 @@ fun BudgetCardPreview() {
 }
 
 @Composable
-fun TotalSpendCard() {
+fun TotalSpendCard(totalAmount: Double) {
     Card(
         modifier = Modifier
             .width(160.dp)
@@ -65,7 +83,7 @@ fun TotalSpendCard() {
                 style = MaterialTheme.typography.titleSmall
             )
             Text(
-                text = "1400",
+                text = totalAmount.toString(),
                 color = MaterialTheme.colorScheme.onSecondaryContainer,
                 style = MaterialTheme.typography.titleLarge
             )
@@ -74,7 +92,22 @@ fun TotalSpendCard() {
 }
 
 @Composable
-fun TrendCard() {
+fun TrendCard(
+    budgetValue: BudgetUiState,
+    totalAmount: Double
+) {
+    val trend by remember(totalAmount, budgetValue) {
+        mutableIntStateOf(evaluateDailyTrend(budgetUiState = budgetValue))
+    }
+    val isPositive by remember(trend) {
+        mutableStateOf(
+            isPositiveTrend(
+                trendValue = trend,
+                budgetUiState = budgetValue,
+                totalSpentAmount = totalAmount
+            )
+        )
+    }
     Card(
         modifier = Modifier
             .width(160.dp)
@@ -94,12 +127,12 @@ fun TrendCard() {
             )
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
-                    text = "143",
+                    text = trend.toString(),
                     color = MaterialTheme.colorScheme.onSecondaryContainer,
                     style = MaterialTheme.typography.titleLarge
                 )
                 Icon(
-                    imageVector = Icons.Default.TrendingDown,
+                    imageVector = if(isPositive) Icons.AutoMirrored.Filled.TrendingDown else Icons.AutoMirrored.Filled.TrendingUp,
                     contentDescription = "",
                     tint = MaterialTheme.colorScheme.onSecondaryContainer
                 )
@@ -134,4 +167,16 @@ fun GoalCard() {
             )
         }
     }
+}
+
+private fun evaluateDailyTrend(budgetUiState: BudgetUiState): Int {
+    return ((budgetUiState.amount - budgetUiState.amountToSave) / getLastDayOfCurrentMonth()).toInt()
+}
+
+private fun isPositiveTrend(
+    trendValue: Int,
+    budgetUiState: BudgetUiState,
+    totalSpentAmount: Double
+): Boolean {
+    return ((budgetUiState.amount - budgetUiState.amountToSave + totalSpentAmount)).toInt() / getLastDayOfCurrentMonth() <= trendValue
 }

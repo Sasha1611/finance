@@ -33,15 +33,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.mfinance.presentation.AppViewModelProvider
 import com.example.mfinance.presentation.components.AnimatedCircleWithText
 import com.example.mfinance.presentation.components.ListOfTransactions
 import com.example.mfinance.presentation.components.SpentTypeComponent
 import com.example.mfinance.presentation.transaction.TransactionViewModel
-import org.w3c.dom.Text
-import java.text.SimpleDateFormat
+import com.example.mfinance.util.getFormattedDate
 import java.util.Calendar
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -112,12 +110,5 @@ fun DetailsScreen(modifier: Modifier = Modifier) {
             ListOfTransactions(viewModel.getAllTransaction().collectAsState().value)
         }
     }
-}
-
-fun getFormattedDate(timeInMillis: Long): String {
-    val calender = Calendar.getInstance()
-    calender.timeInMillis = timeInMillis
-    val dateFormat = SimpleDateFormat("dd/MM/yyyy")
-    return dateFormat.format(calender.timeInMillis)
 }
 

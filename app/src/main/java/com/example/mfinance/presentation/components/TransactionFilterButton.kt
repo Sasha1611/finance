@@ -29,9 +29,3 @@ fun TransactionFilterButton(modifier: Modifier = Modifier, sortingParam: String)
 private fun TransactionFilterButtonPrev() {
     TransactionFilterButton(sortingParam = "Products")
 }
-
-fun getListOfSortingParameters():List<String>{
-    return listOf(
-        "Products", "Transfer", "Services", "Closes", "Other"
-    )
-}

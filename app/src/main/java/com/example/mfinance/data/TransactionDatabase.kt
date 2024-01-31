@@ -7,10 +7,12 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.example.mfinance.util.LocalDateTimeConverter
 
-@Database(entities = [TransactionEntity::class], version = 1, exportSchema = false)
+@Database(entities = [TransactionEntity::class, BudgetEntity::class], version = 1, exportSchema = false)
 @TypeConverters(LocalDateTimeConverter::class)
 abstract class TransactionDatabase : RoomDatabase() {
     abstract fun transactionDao(): TransactionDao
+
+    abstract fun budgetDao(): BudgetDao
 
     companion object {
         @Volatile
@@ -23,7 +25,7 @@ abstract class TransactionDatabase : RoomDatabase() {
                     context,
                     TransactionDatabase::class.java,
                     "transaction_database"
-                )
+                ).fallbackToDestructiveMigration()
                     .build().also { Instance = it }
             }
         }

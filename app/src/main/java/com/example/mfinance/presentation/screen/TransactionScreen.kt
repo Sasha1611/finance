@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -17,12 +16,13 @@ import com.example.mfinance.presentation.components.ListOfTransactions
 import com.example.mfinance.presentation.components.TransactionFilterRow
 import com.example.mfinance.presentation.transaction.TransactionViewModel
 import com.example.mfinance.ui.theme.MFinanceTheme
-import kotlinx.coroutines.launch
+
 
 @Composable
-fun TransactionScreen() {
-    val viewModel: TransactionViewModel = viewModel(factory = AppViewModelProvider.Factory)
-    val coroutineScope = rememberCoroutineScope()
+fun TransactionScreen(
+    onAddClick: () -> Unit = {},
+    viewModel: TransactionViewModel = viewModel(factory = AppViewModelProvider.Factory),
+) {
     Scaffold { paddings ->
         Column(
             modifier = Modifier
@@ -30,12 +30,18 @@ fun TransactionScreen() {
                 .padding(paddings)
         ) {
             BudgetCard()
-            TransactionFilterRow()
-            ListOfTransactions(viewModel.getAllTransaction().collectAsState().value, onClick = {
-                coroutineScope.launch {
-                    viewModel.saveTransaction()
-                }
-            })
+            TransactionFilterRow(
+                filterUiState = viewModel.filterUiState,
+                categories = viewModel.categoriesFlow.collectAsState().value
+            ) {
+                viewModel.updateFilterUiState(it)
+            }
+            ListOfTransactions(
+                viewModel.getAllTransaction().collectAsState().value,
+                enableAddingTransaction = true,
+                onAddClick = {
+                    onAddClick()
+                })
         }
     }
 }

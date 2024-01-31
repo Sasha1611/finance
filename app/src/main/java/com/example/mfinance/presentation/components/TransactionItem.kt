@@ -33,8 +33,8 @@ fun TransactionItem(
     transaction: TransactionUIState = getTestTransaction(),
 ) {
     val shape = RoundedCornerShape(8.dp)
-    val iconColor = if (transaction.amount > 0) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSecondary
-    val amountColor = if (transaction.amount > 0) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.error
+    val iconColor = if (transaction.amount.toDouble() > 0) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSecondary
+    val amountColor = if (transaction.amount.toDouble() > 0) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.error
 
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -44,14 +44,14 @@ fun TransactionItem(
             .fillMaxWidth()
     ) {
         Icon(
-            imageVector = if (transaction.amount > 0) Icons.Default.AttachMoney else Icons.Default.MoneyOff,
+            imageVector = if (transaction.amount.toDouble() > 0) Icons.Default.AttachMoney else Icons.Default.MoneyOff,
             modifier = Modifier.padding(start = 16.dp, end = 8.dp),
             tint = iconColor,
             contentDescription = ""
         )
         Column(Modifier.padding(start = 8.dp, end = 8.dp), verticalArrangement = Arrangement.Center) {
             Text(
-                text = "Spotify",
+                text = transaction.type,
                 color = MaterialTheme.colorScheme.onPrimaryContainer,
                 fontSize = MaterialTheme.typography.labelLarge.fontSize
             )
@@ -63,7 +63,7 @@ fun TransactionItem(
         }
         Spacer(modifier = Modifier.weight(1f))
         Text(
-            text = "${transaction.amount}",
+            text = transaction.amount,
             color = amountColor,
             modifier = Modifier.padding(end = 16.dp)
         )
@@ -79,5 +79,5 @@ fun PreviewOfTransactionItem() {
 }
 
 fun getTestTransaction(): TransactionUIState {
-    return TransactionUIState(1, 460.00, "Food", "Zabka", LocalDateTime.now())
+    return TransactionUIState(1, "460.0", "Food", "Zabka", LocalDateTime.now())
 }

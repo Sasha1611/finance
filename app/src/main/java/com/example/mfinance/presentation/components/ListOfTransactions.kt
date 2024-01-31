@@ -19,16 +19,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.mfinance.data.TransactionEntity
-import com.example.mfinance.presentation.AppViewModelProvider
 import com.example.mfinance.presentation.transaction.TransactionUIState
-import com.example.mfinance.presentation.transaction.TransactionViewModel
-import java.time.LocalDateTime
 
 @Composable
-fun ListOfTransactions(transactions: List<TransactionUIState>, onClick: () -> Unit = {}) {
-    Box(modifier = Modifier.fillMaxSize().heightIn(min = 300.dp)) {
+fun ListOfTransactions(
+    transactions: List<TransactionUIState>,
+    enableAddingTransaction: Boolean = false,
+    onAddClick: () -> Unit = {},
+) {
+    Box(modifier = Modifier
+        .fillMaxSize()
+        .heightIn(min = 300.dp)) {
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
@@ -40,41 +41,21 @@ fun ListOfTransactions(transactions: List<TransactionUIState>, onClick: () -> Un
                 TransactionItem(transaction = transaction)
             }
         }
-
-        FloatingActionButton(
-            onClick = { onClick() },
-            containerColor = MaterialTheme.colorScheme.tertiaryContainer,
-            contentColor = MaterialTheme.colorScheme.onTertiaryContainer,
-            modifier = Modifier
-                .align(Alignment.BottomEnd)
-                .padding(16.dp),
-        ) {
-            Icon(
-                imageVector = Icons.Default.Add,
-                contentDescription = "edit",
-                modifier = Modifier.size(24.dp)
-            )
+        if (enableAddingTransaction) {
+            FloatingActionButton(
+                onClick = { onAddClick() },
+                containerColor = MaterialTheme.colorScheme.tertiaryContainer,
+                contentColor = MaterialTheme.colorScheme.onTertiaryContainer,
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .padding(16.dp),
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Add,
+                    contentDescription = "edit",
+                    modifier = Modifier.size(24.dp)
+                )
+            }
         }
     }
 }
-
-/*
-fun getTestTransactions(): List<TransactionUIState> {
-    return listOf(
-        TransactionUIState(1, 460.00, "Food", "Zabka", LocalDateTime.now()),
-        TransactionUIState(2, -34.00, "Bank", "Millenium", LocalDateTime.now()),
-        TransactionUIState(3, 25.00, "Car", "Stacja", LocalDateTime.now()),
-        TransactionUIState(4, 460.00, "Food", "Zabka", LocalDateTime.now()),
-        TransactionUIState(5, -34.00, "Bank", "Millenium", LocalDateTime.now()),
-        TransactionUIState(6, 25.00, "Car", "Stacja", LocalDateTime.now()),
-        TransactionUIState(7, 460.00, "Food", "Zabka", LocalDateTime.now()),
-        TransactionUIState(8, -34.00, "Bank", "Millenium", LocalDateTime.now()),
-        TransactionUIState(9, 25.00, "Car", "Stacja", LocalDateTime.now()),
-        TransactionUIState(10, 460.00, "Food", "Zabka", LocalDateTime.now()),
-        TransactionUIState(11, -34.00, "Bank", "Millenium", LocalDateTime.now()),
-        TransactionUIState(12, 25.00, "Car", "Stacja", LocalDateTime.now()),
-        TransactionUIState(13, 460.00, "Food", "Zabka", LocalDateTime.now()),
-        TransactionUIState(14, -34.00, "Bank", "Millenium", LocalDateTime.now()),
-        TransactionUIState(15, 25.00, "Car", "Stacja", LocalDateTime.now())
-    )
-}*/

@@ -6,6 +6,7 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.example.mfinance.presentation.screen.TransactionEntryScreen
 import com.example.mfinance.presentation.screen.BudgetScreen
 import com.example.mfinance.presentation.screen.DetailsScreen
 import com.example.mfinance.presentation.screen.TransactionScreen
@@ -17,9 +18,20 @@ fun FinanceNavHost(navController: NavHostController, modifier: Modifier = Modifi
         startDestination = Transaction.route,
         modifier = modifier
     ) {
-        composable(Transaction.route) { TransactionScreen() }
+        composable(Transaction.route) {
+            TransactionScreen(onAddClick = {
+                navController.navigateSingleTopTo(
+                    TransactionEntry.route
+                )
+            })
+        }
         composable(Details.route) { DetailsScreen() }
         composable(Budget.route) { BudgetScreen() }
+        composable(TransactionEntry.route) {
+            TransactionEntryScreen(
+                navigateUp = { navController.navigateUp() },
+                navigateBack = { navController.popBackStack() })
+        }
     }
 }
 
