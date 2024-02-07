@@ -11,14 +11,39 @@ interface TransactionRepository {
 
     suspend fun updateTransaction(transactionEntity: TransactionEntity)
 
-    fun getAllTransactionsBetween(firstDayOfMonth: Long, lastDayOfMonth: Long): Flow<List<TransactionEntity>>
+    fun getTotalSpentBetweenWithNotEmptyCategories(
+        amountFrom: Long,
+        amountTo: Long,
+        categories: List<String>,
+        timeFrom: Long,
+        timeTo: Long
+    ): Flow<Double>
 
-    fun getTotalSpentBetween(firstDayOfMonth: Long, lastDayOfMonth: Long): Flow<Double>
+    fun getTotalSpentBetweenWithEmptyCategories(
+        amountFrom: Long,
+        amountTo: Long,
+        timeFrom: Long,
+        timeTo: Long
+    ): Flow<Double>
 
-    fun getDistinctCategoriesBetween(firstDayOfMonth: Long, lastDayOfMonth: Long): Flow<List<String>>
+    fun getDistinctCategoriesBetween(
+        firstDayOfMonth: Long,
+        lastDayOfMonth: Long
+    ): Flow<List<String>>
 
-    fun getFilteredTransactions(amountFrom: Int, amountTo: Int, categories: List<String>, timeFrom: Long, timeTo: Long): Flow<List<TransactionEntity>>
+    fun getFilteredTransactions(
+        amountFrom: Long,
+        amountTo: Long,
+        categories: List<String>,
+        timeFrom: Long,
+        timeTo: Long
+    ): Flow<List<TransactionEntity>>
 
-    fun getFilteredTransactionsWithEmptyCategories(amountFrom: Int, amountTo: Int, timeFrom: Long, timeTo: Long): Flow<List<TransactionEntity>>
+    fun getFilteredTransactionsWithEmptyCategories(
+        amountFrom: Long,
+        amountTo: Long,
+        timeFrom: Long,
+        timeTo: Long
+    ): Flow<List<TransactionEntity>>
 
 }

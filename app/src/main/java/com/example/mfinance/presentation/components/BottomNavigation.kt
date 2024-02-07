@@ -1,5 +1,6 @@
 package com.example.mfinance.presentation.components
 
+import android.util.Log
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -8,13 +9,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.navigation.NavHostController
 import com.example.mfinance.presentation.navigation.getListOfScreen
-import com.example.mfinance.presentation.navigation.navigateSingleTopTo
 
 
 @Composable
-fun BottomNav(navController: NavHostController) {
+fun BottomNav(onNavigateClick: (String) -> Unit) {
     var selectedItemIndex by rememberSaveable {
         mutableIntStateOf(0)
     }
@@ -24,7 +23,7 @@ fun BottomNav(navController: NavHostController) {
                 selected = selectedItemIndex == index,
                 onClick = {
                     selectedItemIndex = index
-                    navController.navigateSingleTopTo(item.route)
+                    onNavigateClick(item.route)
                 },
                 icon = {
                     Icon(

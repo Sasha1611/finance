@@ -9,6 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
 import com.example.mfinance.presentation.components.BottomNav
 import com.example.mfinance.presentation.navigation.FinanceNavHost
+import com.example.mfinance.presentation.navigation.navigateSingleTopTo
 import com.example.mfinance.ui.theme.MFinanceTheme
 
 class MainActivity : ComponentActivity() {
@@ -19,7 +20,9 @@ class MainActivity : ComponentActivity() {
                 val navigationController = rememberNavController()
                 Scaffold(
                     bottomBar = {
-                        BottomNav(navigationController)
+                        BottomNav{
+                            navigationController.navigateSingleTopTo(it)
+                        }
                     }
                 ) { innerPadding ->
                    FinanceNavHost(

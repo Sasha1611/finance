@@ -15,14 +15,33 @@ class TransactionRepositoryImpl(private val transactionDao: TransactionDao) :
     override suspend fun updateTransaction(transactionEntity: TransactionEntity) =
         transactionDao.update(transactionEntity)
 
-    override fun getAllTransactionsBetween(
-        firstDayOfMonth: Long,
-        lastDayOfMonth: Long
-    ): Flow<List<TransactionEntity>> =
-        transactionDao.getAllTransactionsBetween(firstDayOfMonth, lastDayOfMonth)
+    override fun getTotalSpentBetweenWithNotEmptyCategories(
+        amountFrom: Long,
+        amountTo: Long,
+        categories: List<String>,
+        timeFrom: Long,
+        timeTo: Long
+    ): Flow<Double> =
+        transactionDao.getTotalSpentBetweenWithNotEmptyCategories(
+            amountFrom,
+            amountTo,
+            categories,
+            timeFrom,
+            timeTo
+        )
 
-    override fun getTotalSpentBetween(firstDayOfMonth: Long, lastDayOfMonth: Long): Flow<Double> =
-        transactionDao.getTotalSpentBetween(firstDayOfMonth, lastDayOfMonth)
+    override fun getTotalSpentBetweenWithEmptyCategories(
+        amountFrom: Long,
+        amountTo: Long,
+        timeFrom: Long,
+        timeTo: Long
+    ): Flow<Double> =
+        transactionDao.getTotalSpentBetweenWithEmptyCategories(
+            amountFrom,
+            amountTo,
+            timeFrom,
+            timeTo
+        )
 
 
     override fun getDistinctCategoriesBetween(
@@ -32,14 +51,30 @@ class TransactionRepositoryImpl(private val transactionDao: TransactionDao) :
         transactionDao.getDistinctCategoriesBetween(firstDayOfMonth, lastDayOfMonth)
 
     override fun getFilteredTransactions(
-        amountFrom: Int,
-        amountTo: Int,
+        amountFrom: Long,
+        amountTo: Long,
         categories: List<String>,
         timeFrom: Long,
         timeTo: Long
     ): Flow<List<TransactionEntity>> =
-        transactionDao.getFilteredTransactionsWithNotEmptyCategories(amountFrom, amountTo, categories, timeFrom, timeTo)
+        transactionDao.getFilteredTransactionsWithNotEmptyCategories(
+            amountFrom,
+            amountTo,
+            categories,
+            timeFrom,
+            timeTo
+        )
 
-    override fun getFilteredTransactionsWithEmptyCategories(amountFrom: Int, amountTo: Int, timeFrom: Long, timeTo: Long) =
-        transactionDao.getFilteredTransactionsWithEmptyCategories(amountFrom, amountTo, timeFrom, timeTo)
+    override fun getFilteredTransactionsWithEmptyCategories(
+        amountFrom: Long,
+        amountTo: Long,
+        timeFrom: Long,
+        timeTo: Long
+    ) =
+        transactionDao.getFilteredTransactionsWithEmptyCategories(
+            amountFrom,
+            amountTo,
+            timeFrom,
+            timeTo
+        )
 }

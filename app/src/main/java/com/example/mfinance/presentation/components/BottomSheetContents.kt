@@ -92,11 +92,11 @@ fun AmountBottomSheetContent(
                 contentColor = MaterialTheme.colors.onSecondary
             ),
             onClick = {
-                var fromValue = from.toIntOrNull() ?: 0
-                var toValue = to.toIntOrNull() ?: 0
+                var fromValue = from.toLongOrNull() ?: 0
+                var toValue = to.toLongOrNull() ?: 0
                 if (fromValue > toValue) {
                     fromValue = toValue.coerceAtMost(fromValue)
-                    toValue = from.toIntOrNull() ?: 0
+                    toValue = from.toLongOrNull() ?: 0
                 }
                 onApplyClick(
                     FilterUiState(amountFrom = fromValue, amountTo = toValue)

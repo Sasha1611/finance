@@ -39,13 +39,14 @@ import com.example.mfinance.presentation.transaction.TransactionViewModel
 import com.example.mfinance.util.getFormattedDate
 import com.example.mfinance.util.toLocalDateTime
 import kotlinx.coroutines.launch
+import java.time.LocalDateTime
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TransactionEntryScreen(
     viewModel: TransactionViewModel = viewModel(factory = AppViewModelProvider.Factory),
     navigateUp: () -> Unit = {},
-    navigateBack: () -> Unit = {}
+    navigateBack: () -> Unit = {},
 ) {
     val coroutineScope = rememberCoroutineScope()
     Scaffold(topBar = {
@@ -55,36 +56,58 @@ fun TransactionEntryScreen(
         )
     }) { innerPadding ->
         TransactionEntryBody(
-            viewModel.transactionUiState,
             modifier = Modifier.padding(innerPadding),
             onSaveClick = {
                 coroutineScope.launch {
-                    viewModel.saveTransaction()
+                    viewModel.saveTransaction(it)
                     navigateBack()
                 }
-            },
-            onTransactionValueChanged = { viewModel.updateTransactionUiState(it) }
+            }
         )
     }
 }
 
 @Composable
 fun TransactionEntryBody(
-    transactionUIState: TransactionUIState,
     modifier: Modifier = Modifier,
-    onSaveClick: () -> Unit,
-    onTransactionValueChanged: (TransactionUIState) -> Unit
+    onSaveClick: (TransactionUIState) -> Unit,
 ) {
     Column(
         verticalArrangement = Arrangement.spacedBy(20.dp),
         modifier = modifier.padding(16.dp)
     ) {
         TransactionInputForm(
-            transactionUIState = transactionUIState,
-            onValueChanged = onTransactionValueChanged
+            onSaveButtonClick = { onSaveClick(it) }
         )
+    }
+}
+
+@Composable
+fun TransactionInputForm(
+    modifier: Modifier = Modifier,
+    onSaveButtonClick: (TransactionUIState) -> Unit
+) {
+    val transactionUIState by remember {
+        mutableStateOf(TransactionUIState())
+    }
+    Column(
+        modifier = modifier,
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        AmountTextField{
+            transactionUIState.amount = it
+        }
+        TypeTextField{
+            transactionUIState.type = it
+        }
+        CategoryTextField{
+            transactionUIState.category = it
+        }
+        TimeTextFieldWithDatePicker{
+            transactionUIState.time = it
+        }
         Button(
-            onClick = onSaveClick,
+            onClick = { onSaveButtonClick(transactionUIState) },
             shape = MaterialTheme.shapes.small,
             modifier = Modifier.fillMaxWidth()
         ) {
@@ -93,112 +116,130 @@ fun TransactionEntryBody(
     }
 }
 
+@Composable
+private fun AmountTextField(onValueChange: (String) -> Unit) {
+    var amount by remember {
+        mutableStateOf("")
+    }
+    OutlinedTextField(
+        value = amount,
+        onValueChange = {
+            amount = it
+            onValueChange(it)
+        },
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
+        label = { Text(text = "Amount") },
+        colors = OutlinedTextFieldDefaults.colors(
+            focusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
+            unfocusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
+            disabledContainerColor = MaterialTheme.colorScheme.secondaryContainer,
+        ),
+        modifier = Modifier.fillMaxWidth(),
+        enabled = true,
+        singleLine = true
+    )
+}
+
+@Composable
+private fun TypeTextField(onValueChange: (String) -> Unit) {
+    var type by remember {
+        mutableStateOf("")
+    }
+    OutlinedTextField(
+        value = type,
+        onValueChange = {
+            type = it
+            onValueChange(it)
+
+        },
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+        label = { Text(text = "Type") },
+        colors = OutlinedTextFieldDefaults.colors(
+            focusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
+            unfocusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
+            disabledContainerColor = MaterialTheme.colorScheme.secondaryContainer,
+        ),
+        modifier = Modifier.fillMaxWidth(),
+        enabled = true,
+        singleLine = true
+    )
+}
+
+@Composable
+private fun CategoryTextField(onValueChange: (String) -> Unit) {
+    var category by remember {
+        mutableStateOf("")
+    }
+    OutlinedTextField(
+        value = category,
+        onValueChange = {
+            category = it
+            onValueChange(it)
+        },
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+        label = { Text(text = "Category") },
+        colors = OutlinedTextFieldDefaults.colors(
+            focusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
+            unfocusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
+            disabledContainerColor = MaterialTheme.colorScheme.secondaryContainer,
+        ),
+        modifier = Modifier.fillMaxWidth(),
+        enabled = true,
+        singleLine = true
+    )
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TransactionInputForm(
-    transactionUIState: TransactionUIState,
-    modifier: Modifier = Modifier,
-    onValueChanged: (TransactionUIState) -> Unit = {}
-) {
-    Column(
-        modifier = modifier,
-        verticalArrangement = Arrangement.spacedBy(16.dp)
-    ) {
-        OutlinedTextField(
-            value = transactionUIState.amount,
-            onValueChange = { onValueChanged(transactionUIState.copy(amount = it)) },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
-            label = { Text(text = "Amount") },
-            colors = OutlinedTextFieldDefaults.colors(
-                focusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
-                unfocusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
-                disabledContainerColor = MaterialTheme.colorScheme.secondaryContainer,
-            ),
-            modifier = Modifier.fillMaxWidth(),
-            enabled = true,
-            singleLine = true
-        )
-        OutlinedTextField(
-            value = transactionUIState.type,
-            onValueChange = { onValueChanged(transactionUIState.copy(type = it)) },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-            label = { Text(text = "Type") },
-            colors = OutlinedTextFieldDefaults.colors(
-                focusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
-                unfocusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
-                disabledContainerColor = MaterialTheme.colorScheme.secondaryContainer,
-            ),
-            modifier = Modifier.fillMaxWidth(),
-            enabled = true,
-            singleLine = true
-        )
-        OutlinedTextField(
-            value = transactionUIState.category,
-            onValueChange = { onValueChanged(transactionUIState.copy(category = it)) },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-            label = { Text(text = "Category") },
-            colors = OutlinedTextFieldDefaults.colors(
-                focusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
-                unfocusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
-                disabledContainerColor = MaterialTheme.colorScheme.secondaryContainer,
-            ),
-            modifier = Modifier.fillMaxWidth(),
-            enabled = true,
-            singleLine = true
-        )
-        var showDatePicker by remember { mutableStateOf(false) }
-        val datePickerState = rememberDatePickerState(initialDisplayMode = DisplayMode.Picker)
-        OutlinedTextField(
-            value = datePickerState.selectedDateMillis?.let { getFormattedDate(it) } ?: "",
-            onValueChange = {},
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-            label = { Text(text = "Time") },
-            colors = OutlinedTextFieldDefaults.colors(
-                focusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
-                unfocusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
-                disabledContainerColor = MaterialTheme.colorScheme.secondaryContainer,
-            ),
-            trailingIcon = {
-                IconButton(onClick = { showDatePicker = true }) {
-                    Icon(imageVector = Icons.Default.DateRange, contentDescription = "")
+fun TimeTextFieldWithDatePicker(onValueChange: (LocalDateTime) -> Unit) {
+    var showDatePicker by remember { mutableStateOf(false) }
+    val datePickerState = rememberDatePickerState(initialDisplayMode = DisplayMode.Picker)
+    OutlinedTextField(
+        value = datePickerState.selectedDateMillis?.let { getFormattedDate(it) } ?: "",
+        onValueChange = {},
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+        label = { Text(text = "Time") },
+        colors = OutlinedTextFieldDefaults.colors(
+            focusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
+            unfocusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
+            disabledContainerColor = MaterialTheme.colorScheme.secondaryContainer,
+        ),
+        trailingIcon = {
+            IconButton(onClick = { showDatePicker = true }) {
+                Icon(imageVector = Icons.Default.DateRange, contentDescription = "")
+            }
+        },
+        readOnly = true,
+        modifier = Modifier.fillMaxWidth(),
+    )
+    if (showDatePicker) {
+        DatePickerDialog(
+            onDismissRequest = { /*TODO*/ },
+            confirmButton = {
+                Button(onClick = {
+                    datePickerState.selectedDateMillis?.toLocalDateTime()?.let {
+                            onValueChange(it)
+                    }
+                    showDatePicker = false
+                }) {
+                    Text(text = "OK")
                 }
             },
-            readOnly = true,
-            modifier = Modifier.fillMaxWidth(),
-        )
-        if (showDatePicker) {
-            DatePickerDialog(
-                onDismissRequest = { /*TODO*/ },
-                confirmButton = {
-                    Button(onClick = {
-                        datePickerState.selectedDateMillis?.toLocalDateTime()?.let {
-                            onValueChanged(
-                                transactionUIState.copy(
-                                    time = it
-                                )
-                            )
-                        }
-                        showDatePicker = false
-                    }) {
-                        Text(text = "OK")
-                    }
-                },
-                dismissButton = {
-                    Button(onClick = { /*TODO*/ }) {
-                        Text(text = "Cancel")
-                    }
+            dismissButton = {
+                Button(onClick = { showDatePicker = false }) {
+                    Text(text = "Cancel")
                 }
-            ) {
-                DatePicker(state = datePickerState)
             }
+        ) {
+            DatePicker(state = datePickerState)
         }
     }
+
 }
 
 @Preview(showBackground = true)
 @Composable
 private fun TransactionDialogPrev() {
     TransactionEntryBody(
-        transactionUIState = TransactionUIState(0, "20.0", "Type", "Category"),
-        onSaveClick = {}, onTransactionValueChanged = {})
+        onSaveClick = {})
 }

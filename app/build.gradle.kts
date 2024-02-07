@@ -80,6 +80,9 @@ dependencies {
 
     //Room
     implementation(libs.androidx.room.runtime)
-    ksp("androidx.room:room-compiler:${rootProject.extra["room_version"]}")
+    ksp(libs.androidx.room.compiler)
     implementation(libs.androidx.room.ktx)
+
+    //Lifecycle
+    implementation(libs.androidx.lifecycle.runtime.compose)
 }

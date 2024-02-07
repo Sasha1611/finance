@@ -6,9 +6,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.mfinance.presentation.AppViewModelProvider
 import com.example.mfinance.presentation.components.BudgetCard
@@ -31,13 +31,13 @@ fun TransactionScreen(
         ) {
             BudgetCard()
             TransactionFilterRow(
-                filterUiState = viewModel.filterUiState,
-                categories = viewModel.categoriesFlow.collectAsState().value
+                filterUiState = viewModel.filterUiState.collectAsStateWithLifecycle().value,
+                categories = viewModel.categoriesFlow.collectAsStateWithLifecycle().value
             ) {
-                viewModel.updateFilterUiState(it)
+                viewModel.updateTransactionsWithNewFilter(it)
             }
             ListOfTransactions(
-                viewModel.getAllTransaction().collectAsState().value,
+                viewModel.getAllTransaction().collectAsStateWithLifecycle().value,
                 enableAddingTransaction = true,
                 onAddClick = {
                     onAddClick()
