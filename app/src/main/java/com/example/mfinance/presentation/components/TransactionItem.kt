@@ -36,6 +36,7 @@ fun TransactionItem(
     val iconColor = if (transaction.amount.toDouble() > 0) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSecondary
     val amountColor = if (transaction.amount.toDouble() > 0) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.error
 
+
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier

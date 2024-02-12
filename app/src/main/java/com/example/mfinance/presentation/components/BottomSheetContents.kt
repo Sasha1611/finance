@@ -10,14 +10,20 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
-import androidx.compose.material3.Divider
+import androidx.compose.material3.DateRangePicker
+import androidx.compose.material3.DisplayMode
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Text
+import androidx.compose.material3.rememberDateRangePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -32,7 +38,7 @@ import com.example.mfinance.presentation.transaction.TransactionViewModel.Filter
 @Composable
 fun AmountBottomSheetContent(
     modifier: Modifier = Modifier,
-    filterUiState: FilterUiState,
+    filterUiState: () -> FilterUiState,
     onApplyClick: (FilterUiState) -> Unit = { }
 ) {
     Column(
@@ -42,17 +48,17 @@ fun AmountBottomSheetContent(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         var from by remember {
-            if (filterUiState.amountFrom.toString() == "0") {
+            if (filterUiState().amountFrom.toString() == "0") {
                 mutableStateOf("")
             } else {
-                mutableStateOf(filterUiState.amountFrom.toString())
+                mutableStateOf(filterUiState().amountFrom.toString())
             }
         }
         var to by remember {
-            if (filterUiState.amountTo.toString() == "0") {
+            if (filterUiState().amountTo.toString() == "0") {
                 mutableStateOf("")
             } else {
-                mutableStateOf(filterUiState.amountTo.toString())
+                mutableStateOf(filterUiState().amountTo.toString())
             }
         }
         Text(text = "Amount")
@@ -71,7 +77,7 @@ fun AmountBottomSheetContent(
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 label = { Text(text = "From") },
             )
-            Divider(
+            HorizontalDivider(
                 modifier = Modifier.width(20.dp)
             )
             OutlinedTextField(
@@ -88,8 +94,8 @@ fun AmountBottomSheetContent(
         Button(
             modifier = Modifier.fillMaxWidth(),
             colors = ButtonDefaults.buttonColors(
-                containerColor = MaterialTheme.colors.secondary,
-                contentColor = MaterialTheme.colors.onSecondary
+                containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                contentColor = MaterialTheme.colorScheme.onSecondary
             ),
             onClick = {
                 var fromValue = from.toLongOrNull() ?: 0
@@ -107,10 +113,11 @@ fun AmountBottomSheetContent(
     }
 }
 
+@Stable
 @Composable
 fun CategoryBottomSheetContent(
-    filterUiState: FilterUiState,
-    categories: List<String>,
+    filterUiState: () -> FilterUiState,
+    categories: () -> List<String>,
     onApplyClick: (FilterUiState) -> Unit = { }
 ) {
     Column(
@@ -119,21 +126,25 @@ fun CategoryBottomSheetContent(
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         var selectedCategories by remember {
-            mutableStateOf(filterUiState.categories)
+            mutableStateOf(filterUiState().categories)
         }
         Row(horizontalArrangement = Arrangement.Center, modifier = Modifier.fillMaxWidth()) {
             Text(text = "Categories")
         }
-        CategoriesLazyRow(categories, selectedCategories = selectedCategories, onCategoryAdded = {
-            selectedCategories = selectedCategories + it
-        }, onCategoryRemoved = {
-            selectedCategories = selectedCategories.toMutableList().apply { remove(it) }
-        })
+        CategoriesLazyRow(
+            { categories() },
+            selectedCategories = { selectedCategories },
+            onCategoryAdded = {
+                selectedCategories = selectedCategories + it
+            },
+            onCategoryRemoved = {
+                selectedCategories = selectedCategories.toMutableList().apply { remove(it) }
+            })
         Button(
             modifier = Modifier.fillMaxWidth(),
             colors = ButtonDefaults.buttonColors(
-                containerColor = MaterialTheme.colors.secondary,
-                contentColor = MaterialTheme.colors.onSecondary
+                containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                contentColor = MaterialTheme.colorScheme.onSecondary
             ),
             onClick = {
                 onApplyClick(
@@ -145,21 +156,27 @@ fun CategoryBottomSheetContent(
     }
 }
 
+@Stable
 @Composable
 fun CategoriesLazyRow(
-    categories: List<String>,
-    selectedCategories: List<String>,
+    categories: () -> List<String>,
+    selectedCategories: () -> List<String>,
     onCategoryAdded: (String) -> Unit,
     onCategoryRemoved: (String) -> Unit
 ) {
     LazyColumn(horizontalAlignment = Alignment.Start) {
-        items(categories, key = { category -> category }) { category ->
+        items(categories(), key = { category -> category }) { category ->
             CategoriesCheckRow(
                 category,
-                selectedCategories = selectedCategories,
-                onCategoryAdded = { onCategoryAdded(it) },
-                onCategoryRemoved = { onCategoryRemoved(it) })
-            Divider()
+                isChecked = category in selectedCategories(),
+                onCheckChanged = {
+                    if (it) {
+                        onCategoryAdded(category)
+                    } else {
+                        onCategoryRemoved(category)
+                    }
+                })
+            HorizontalDivider()
         }
     }
 }
@@ -167,22 +184,11 @@ fun CategoriesLazyRow(
 @Composable
 fun CategoriesCheckRow(
     category: String,
-    selectedCategories: List<String>,
-    onCategoryAdded: (String) -> Unit = {},
-    onCategoryRemoved: (String) -> Unit = {}
+    isChecked: Boolean,
+    onCheckChanged: (Boolean) -> Unit,
 ) {
     Row(verticalAlignment = Alignment.CenterVertically) {
-        var isChecked by remember {
-            mutableStateOf(selectedCategories.contains(category))
-        }
-        Checkbox(checked = isChecked, onCheckedChange = {
-            isChecked = !isChecked
-            if (isChecked) {
-                onCategoryAdded(category)
-            } else {
-                onCategoryRemoved(category)
-            }
-        })
+        Checkbox(checked = isChecked, onCheckedChange = onCheckChanged)
         Text(text = category)
     }
 }
@@ -190,25 +196,81 @@ fun CategoriesCheckRow(
 @Preview(showBackground = true)
 @Composable
 private fun AmountBottomSheetContentPrev() {
-    AmountBottomSheetContent(filterUiState = FilterUiState())
+    AmountBottomSheetContent(filterUiState = { FilterUiState() })
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun DateBottomSheetContent(
+    filterUiState: () -> FilterUiState,
+    onApplyClick: (FilterUiState) -> Unit
+) {
+    val dateRangePickerState = rememberDateRangePickerState(
+        initialSelectedStartDateMillis = filterUiState().timeFrom,
+        initialSelectedEndDateMillis = filterUiState().timeTo,
+        initialDisplayMode = DisplayMode.Input
+    )
+    Column(
+        modifier = Modifier
+            .padding(20.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp),
+    ) {
+        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
+            Text(text = "Time range")
+        }
+        DateRangePicker(
+            state = dateRangePickerState,
+            title = {},
+            headline = {},
+            showModeToggle = false
+        )
+        Button(
+            modifier = Modifier.fillMaxWidth(),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                contentColor = MaterialTheme.colorScheme.onSecondary
+            ),
+            onClick = {
+                onApplyClick(
+                    FilterUiState(
+                        timeFrom = dateRangePickerState.selectedStartDateMillis
+                            ?: filterUiState().timeFrom,
+                        timeTo = dateRangePickerState.selectedEndDateMillis
+                            ?: filterUiState().timeTo
+                    )
+                )
+            }) {
+            Text(text = "Apply")
+        }
+    }
 }
 
 @Preview(showBackground = true)
 @Composable
 private fun CategoryBottomSheetContentPrev() {
     CategoryBottomSheetContent(
-        filterUiState = FilterUiState(
-            categories = listOf(
+        filterUiState = {
+            FilterUiState(
+                categories = listOf(
+                    "Electronics",
+                    "Food",
+                    "Clothes",
+                )
+            )
+        }, categories = {
+            listOf(
                 "Electronics",
                 "Food",
                 "Clothes",
+                "Services",
+                "Transaction"
             )
-        ), categories = listOf(
-            "Electronics",
-            "Food",
-            "Clothes",
-            "Services",
-            "Transaction"
-        )
+        }
     )
+}
+
+@Preview
+@Composable
+private fun DateBottomSheetContentPrev() {
+
 }

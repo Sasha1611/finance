@@ -17,8 +17,7 @@ import kotlinx.coroutines.withContext
 
 class TransactionViewModel(private val transactionRepository: TransactionRepository) : ViewModel() {
 
-    var transactionUiState by mutableStateOf(TransactionUIState())
-        private set
+    private var transactionUiState by mutableStateOf(TransactionUIState())
 
     var filterUiState = MutableStateFlow(FilterUiState())
         private set
@@ -63,6 +62,7 @@ class TransactionViewModel(private val transactionRepository: TransactionReposit
         } else {
             setTransactionsWithFilter()
         }
+        getFilteredSpentBetween(filterUiState.value)
     }
 
     private fun setTransactionsWithFilter() {

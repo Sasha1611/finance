@@ -19,14 +19,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.example.mfinance.presentation.transaction.TransactionUIState
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.mfinance.presentation.AppViewModelProvider
+import com.example.mfinance.presentation.transaction.TransactionViewModel
 
 @Composable
 fun ListOfTransactions(
-    transactions: List<TransactionUIState>,
+    viewModel: TransactionViewModel = viewModel(factory = AppViewModelProvider.Factory),
     enableAddingTransaction: Boolean = false,
     onAddClick: () -> Unit = {},
 ) {
+    val transactions = viewModel.getAllTransaction().collectAsStateWithLifecycle().value
     Box(modifier = Modifier
         .fillMaxSize()
         .heightIn(min = 300.dp)) {

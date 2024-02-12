@@ -30,7 +30,7 @@ fun getFirstAndLastDayOfCurrentMonth(): Pair<Long, Long> {
 
 fun getLastDayOfCurrentMonth():Int{
     val calendar = Calendar.getInstance()
-    return calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
+    return calendar.getActualMaximum(Calendar.DAY_OF_MONTH)
 }
 
 fun Long.toLocalDateTime(): LocalDateTime =

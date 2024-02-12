@@ -26,7 +26,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.mfinance.presentation.AppViewModelProvider
 import com.example.mfinance.presentation.components.AnimatedCircleWithText
@@ -101,7 +100,7 @@ fun DetailsScreen(modifier: Modifier = Modifier) {
                 SpentTypeComponent(color = Color.Blue)
             }
             Spacer(Modifier.height(10.dp))
-            ListOfTransactions(viewModel.getAllTransaction().collectAsStateWithLifecycle().value)
+            ListOfTransactions()
         }
     }
 }

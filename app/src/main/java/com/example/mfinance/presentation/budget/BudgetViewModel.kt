@@ -40,7 +40,7 @@ class BudgetViewModel(private val budgetRepository: BudgetRepository) : ViewMode
         budgetRepository.insert(_budgetFlow.value.toBudgetEntity())
     }
 
-    fun BudgetUiState.toBudgetEntity(): BudgetEntity {
+    private fun BudgetUiState.toBudgetEntity(): BudgetEntity {
         return BudgetEntity(
             id = this.id,
             amount = this.amount,
@@ -50,7 +50,7 @@ class BudgetViewModel(private val budgetRepository: BudgetRepository) : ViewMode
         )
     }
 
-    fun BudgetEntity.toBudgetUiState(): BudgetUiState {
+    private fun BudgetEntity.toBudgetUiState(): BudgetUiState {
         return BudgetUiState(
             id = this.id,
             amount = this.amount,

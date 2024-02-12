@@ -4,6 +4,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Details
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.runtime.Stable
 import androidx.compose.ui.graphics.vector.ImageVector
 
 interface Screen{
@@ -37,6 +38,7 @@ object TransactionEntry : Screen {
     override val route: String = "transactionEntry"
 }
 
+@Stable
 fun getListOfScreen():List<ScreenWithIcon>{
     return listOf(Transaction, Details, Budget)
 }
